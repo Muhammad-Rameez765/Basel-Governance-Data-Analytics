@@ -1,0 +1,65 @@
+Step 1: Use an Existing AML Database
+USE AML_Database;
+
+-- Step 2: Create Table for Basel AML Index 2023
+CREATE TABLE IF NOT EXISTS Basel_AML_Index (
+    Country VARCHAR(100) PRIMARY KEY,
+    Region VARCHAR(100),
+    ML_TF_Risk_Score DECIMAL(3,2) NOT NULL,
+    INDEX idx_risk_score (ML_TF_Risk_Score)
+);
+
+-- Step 3: Insert Sample Data from Basel AML Index 2023
+INSERT INTO Basel_AML_Index (Country, Region, ML_TF_Risk_Score) VALUES
+('Haiti', 'Americas', 8.25),
+('Chad', 'Africa', 8.14),
+('Myanmar', 'Asia', 8.13),
+('Democratic Republic of the Congo', 'Africa', 8.10),
+('Mozambique', 'Africa', 7.88),
+('Guinea-Bissau', 'Africa', 7.69),
+('Venezuela', 'Americas', 7.63),
+('Laos', 'Asia', 7.44),
+('Madagascar', 'Africa', 7.43),
+('Algeria', 'Middle East & North Africa', 7.22)
+ON DUPLICATE KEY UPDATE ML_TF_Risk_Score=VALUES(ML_TF_Risk_Score);
+
+-- Step 4: Create Table for FATF Grey/Black List
+CREATE TABLE IF NOT EXISTS FATF_List (
+    Country VARCHAR(100) PRIMARY KEY,
+    FATF_Status ENUM('Grey List', 'Black List', 'Not Listed') NOT NULL,
+    INDEX idx_fatf_status (FATF_Status)
+);
+
+-- Step 5: Insert Sample FATF Data
+INSERT INTO FATF_List (Country, FATF_Status) VALUES
+('Iran', 'Black List'),
+('North Korea', 'Black List'),
+('Myanmar', 'Black List'),
+('Pakistan', 'Grey List'),
+('UAE', 'Grey List'),
+('Turkey', 'Grey List'),
+('South Africa', 'Grey List'),
+('Nigeria', 'Grey List'),
+('Syria', 'Grey List'),
+('Yemen', 'Grey List'),
+('Democratic Republic of the Congo', 'Grey List'),
+('Mozambique', 'Grey List')
+ON DUPLICATE KEY UPDATE FATF_Status=VALUES(FATF_Status);
+
+-- Step 6: Query High-Risk Countries (Basel Score > 7.0)
+SELECT Country, ML_TF_Risk_Score
+FROM Basel_AML_Index
+WHERE ML_TF_Risk_Score > 7.0
+ORDER BY ML_TF_Risk_Score DESC;
+
+-- Step 7: Compare Basel AML Index with FATF List
+SELECT b.Country, b.ML_TF_Risk_Score, COALESCE(f.FATF_Status, 'Not Listed') AS FATF_Status
+FROM Basel_AML_Index b
+LEFT JOIN FATF_List f ON b.Country = f.Country;
+
+-- Step 8: Identify High-Risk FATF Listed Countries
+SELECT b.Country, b.ML_TF_Risk_Score, f.FATF_Status
+FROM Basel_AML_Index b
+JOIN FATF_List f ON b.Country = f.Country
+WHERE f.FATF_Status IN ('Grey List', 'Black List')
+ORDER BY b.ML_TF_Risk_Score DESC;"
