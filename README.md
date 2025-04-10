@@ -10,4 +10,4 @@ DAX (Data Analysis Expressions) – Created custom measures and calculations wit
 
  Power Query – Executed data extraction, transformation, and loading (ETL) processes to clean and prepare AML datasets for analysis.
  
-Power BI – Developed interactive dashboards and visualizations to analyze Anti-Money Laundering (AML) data. (Pending)
+Tableau – Developed interactive dashboards and visualizations to analyze Anti-Money Laundering (AML) data. (Pending)
