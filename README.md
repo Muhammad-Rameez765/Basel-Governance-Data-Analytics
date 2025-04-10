@@ -1,7 +1,5 @@
 # Basel-Governance-Data-Analytics
 
-Basel Governance Data Analytic
-
  SQL (MySQL) – Managed and queried datasets, including the Basel AML Index and FATF lists, to assess high-risk countries.
  
 Python (Jupyter Notebook) – Performed data analysis and pre-processing tasks to prepare data for visualization and reporting.
